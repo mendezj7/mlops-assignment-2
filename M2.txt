@@ -1,0 +1,50 @@
+1. Enhanced API with Error Handling & Logging (api.py)
+
+Structured Logging: Configured logging with timestamp, module name, level, and message
+
+Error Handling in /predict endpoint:
+
+File size validation (max 10MB)
+File format validation (jpg, jpeg, png, bmp)
+Image format verification
+Detailed exception handling with informative error messages
+Full stack trace logging for debugging
+Pydantic Response Models:
+
+HealthResponse - validates health check responses
+PredictionResponse - includes predicted label, probabilities, and confidence score
+ErrorResponse - structured error responses
+Enhanced Endpoints:
+
+/health - now returns structured response with logging
+/predict - comprehensive error handling, file validation, and detailed logging
+Added OpenAPI documentation support via FastAPI
+
+2. Created .dockerignore
+
+3. Enhanced Dockerfile with Security & Health Checks
+
+
+Pinned Base Image: python:3.10-slim-bullseye (specific version, not floating tag)
+Non-root User: Created appuser (UID 1000) for enhanced security
+Health Check: Added HEALTHCHECK that:
+Pings /health endpoint every 30 seconds
+Waits 5 seconds before starting checks
+Container marked unhealthy after 3 failed checks
+Proper Ownership: All files owned by appuser for security
+System Package: Added curl for health checks
+
+
+You can now test locally:
+
+# Build image
+docker build -t cats-dogs-api .
+
+# Run container with health checks
+docker run -p 8000:8000 cats-dogs-api
+
+# Test health endpoint
+curl http://localhost:8000/health
+
+# Test prediction (replace path with actual image)
+curl -X POST "http://localhost:8000/predict" -F "file=@path/to/image.jpg"
