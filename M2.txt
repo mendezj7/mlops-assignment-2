@@ -41,10 +41,11 @@ You can now test locally:
 docker build -t cats-dogs-api .
 
 # Run container with health checks
-docker run -p 8000:8000 cats-dogs-api
+docker run -p 8000:8000 dogs-cats-api
 
 # Test health endpoint
 curl http://localhost:8000/health
 
 # Test prediction (replace path with actual image)
 curl -X POST "http://localhost:8000/predict" -F "file=@path/to/image.jpg"
+
