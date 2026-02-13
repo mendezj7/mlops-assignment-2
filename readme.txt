@@ -3,37 +3,55 @@ M2: Model Packaging & Containerization
 Objective: Package the trained model into a reproducible, containerized service.
 
 Status:
-- Inference service: DONE (FastAPI) in `src/api.py`
-- Requirements: DONE (pinned) in `requirements.txt`
-- Dockerfile: DONE in `Dockerfile`
+- Inference service: DONE (FastAPI) in `src/api.py` ✅
+- Requirements: DONE (pinned versions) in `requirements.txt` ✅
+- Dockerfile: DONE in `Dockerfile` ✅
+- Docker build & verification: DONE ✅
+
+Features Implemented:
+- FastAPI with /health and /predict endpoints
+- Structured logging with timestamps and error tracking
+- Pydantic response models for type validation
+- File validation (size, format, image integrity)
+- Docker health checks (automatic container monitoring)
+- Security: Non-root user (appuser), no system vulnerabilities
+- Proxy support for corporate environments (fastweb.bell.ca:80)
 
 Quick Setup (Local, no Docker)
 ------------------------------
-1) Install deps (conda env example):
-   conda run -n rag310 python -m pip install -r requirements.txt
+1) Install deps:
+   pip install -r requirements.txt
 
-2) Ensure model exists (from DVC):
+2) Ensure model exists:
    dvc pull artifacts.dvc
 
 3) Run API:
-   conda run -n rag310 uvicorn src.api:app --host 0.0.0.0 --port 8000
+   uvicorn src.api:app --host 0.0.0.0 --port 8000
 
 4) Test health:
    curl http://localhost:8000/health
 
-5) Test prediction (multipart image upload):
-   curl -X POST "http://localhost:8000/predict" -F "file=@/path/to/image.jpg"
+5) Test prediction:
+   curl -X POST "http://localhost:8000/predict" -F "file=@path/to/image.jpg"
 
 Docker Build/Run
 ----------------
 1) Build image:
-   docker build -t cats-dogs-api .
+   docker build -t dogs-cats-api .
 
-2) Run container:
-   docker run -p 8000:8000 cats-dogs-api
+2) Run container (background):
+   docker run -d -p 8000:8000 dogs-cats-api
 
-3) Verify:
+3) Test health endpoint:
    curl http://localhost:8000/health
+
+4) Test prediction:
+   curl.exe -X POST "http://localhost:8000/predict" -F "file=@C:\path\to\image.jpg"
+
+5) Stop container:
+   docker stop <container-id>
+
+Note: Base image is python:3.10-slim-bullseye for security & size optimization
 
 
 M3: CI Pipeline for Build, Test & Image Creation
